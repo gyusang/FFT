@@ -99,11 +99,12 @@ def process_wav(filename, comment, delta_t, inc_t=None, specific_lim = (20, 2000
         channel = 0
         data = data[:,channel]
     # play(data, rate)
-
+    data_info = np.iinfo(type(data[0]))
     # data = data[::10]
     # rate //= 10
     N = len(data)
-
+    while np.max(data) < data_info.max/2:
+        data = data * 2
 
     # #spectogram
     # specto_f, specto_t, Sxx = spectrogram(data, rate)
@@ -138,7 +139,6 @@ def process_wav(filename, comment, delta_t, inc_t=None, specific_lim = (20, 2000
         import sys
         print("%s Too Short!"%comment)
         sys.exit(0)
-    data_info = np.iinfo(type(data[0]))
 
     whole_df = fs/N
     whole_f = (np.arange(0, N)*whole_df)[0:int(N/2+1)]
@@ -299,21 +299,21 @@ ax_result = result_fig.add_subplot(111)
 
 # process_wav(filename, comment, delta_t: 한 간격의 길이, inc_t=None, specific_lim = (20, 2000), fft_color = 'C2', scatter_color = 'C4', max_color = 'r')
 
-legend_setting = ["high", "low"]
-filenames = ["sample piano.wav", "IMG_2252.wav"]
+legend_setting = ["sci-fi", "low"]
+filenames = ["oneone.wav", "IMG_2252.wav"]
 
 reverse = False
 if reverse:
     legend_setting.reverse()
     filenames.reverse()
 
-N1, anim1, f1, fs1 = process_wav(filenames[0], legend_setting[0], 3, 1, (0, 2000)) # What I want to see
+N1, anim1, f1, fs1 = process_wav(filenames[0], legend_setting[0], 0.05, 0.01, (0, 2000)) # What I want to see
 
 second = False
 if second:
     N2, anim2, f2, fs2 = process_wav(filenames[1], legend_setting[1], 1, fft_color = 'C3', scatter_color = 'blue', max_color = 'b')
 
-cv2.destroyAllWindows() #NOTE destroying
+# cv2.destroyAllWindows() #NOTE destroying
 plt.close(whole_fig)
 plt.close(result_fig)
 # plt.clf()
